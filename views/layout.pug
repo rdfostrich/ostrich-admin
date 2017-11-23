@@ -1,0 +1,28 @@
+doctype html
+html
+  head
+    title= title
+    link(rel='stylesheet', href='/stylesheets/style.css')
+  body
+    div(class='main')
+      header
+        img(src='images/logo.png' class='logo' alt='OSTRICH')
+        h1(class='title') Versioned Random-Access Triple Store
+
+      div(class='actions')
+        div(class='actionsWrapper')
+          a(href='/qvm') Version Materialization
+          a(href='/qdm') Delta Materialization
+          a(href='/qvq') Version Query
+          a(href='/ingest') Ingest
+
+      div(class='stats')
+        b Store:
+        |  #{path}
+        b Versions:
+        |  #{versions}
+        b Size:
+        |  #{size} MB
+
+    div(class='content')
+      block content
