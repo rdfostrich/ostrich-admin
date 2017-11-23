@@ -83,3 +83,35 @@ header {
   margin-left: 10px;
 }
 
+form.query label {
+  margin-bottom: 10px;
+  display: inline-block;
+  width: 15%;
+  font-size: 16px;
+}
+
+form.query input[type='text'], input[type='number'] {
+  display: inline-block;
+  width: 80%;
+  font-size: 16px;
+}
+
+form.query input[type='submit'] {
+  margin-left: 15%;
+  font-size: 16px;
+}
+
+table.results {
+  margin: 10px;
+  width: 100%;
+}
+
+table.results tr td {
+  font-size: 12px;
+  padding: 5px;
+}
+
+table.results thead td {
+  font-weight: bold;
+  font-size: 16px;
+}

@@ -21,8 +21,13 @@ html
         |  #{path}
         b Versions:
         |  #{versions}
+        b Unique triples:
+        |  #{totalTriples}
         b Size:
         |  #{size} MB
 
     div(class='content')
       block content
+
+    div(class='data')
+      block data

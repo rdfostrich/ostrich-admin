@@ -1,0 +1,45 @@
+extends layout
+
+block content
+    form(action='/qvm' method='get' class='query')
+        label(for='subject') Subject
+        input(id='subject' name='subject' type='text' value=query.subject)
+        br
+        label(for='predicate') Predicate
+        input(id='predicate' name='predicate' type='text' value=query.predicate)
+        br
+        label(for='object') Object
+        input(id='object' name='object' type='text' value=query.object)
+        br
+
+        label(for='version') Version
+        input(id='version' name='version' type='number' value=query.version)
+        br
+
+        label(for='offset') Offset
+        input(id='offset' name='offset' type='number' value=query.offset)
+        br
+
+        label(for='limit') Limit
+        input(id='limit' name='limit' type='number' value=query.limit)
+        br
+
+        input(type='submit' value='Search')
+
+    div(class='stats')
+        b Results:
+        |  #{currentCount} / #{count} (<i>#{countType}</i>)
+        b Duration:
+        |  #{duration}ms
+
+block data
+    table(class='results')
+        thead
+            td Subject
+            td Predicate
+            td Object
+        each triple in triples
+            tr
+                td #{triple.subject}
+                td #{triple.predicate}
+                td #{triple.object}
