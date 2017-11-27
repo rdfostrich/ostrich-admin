@@ -86,20 +86,25 @@ header {
 form.query label {
   margin-bottom: 10px;
   display: inline-block;
-  width: 15%;
+  width: 20%;
   font-size: 16px;
 }
 
 form.query input[type='text'], input[type='number'] {
   display: inline-block;
-  width: 75%;
+  width: 70%;
   font-size: 12px;
   height: 18px;
 }
 
 form.query input[type='submit'] {
-  margin-left: 15%;
-  font-size: 16px;
+  background-image: linear-gradient(to bottom, #e4e4e4, #f7f7f7);
+  border: 1px solid #afafaf;
+  margin-left: 20%;
+  font-size: 26px;
+  width: 71%;
+  font-weight: 500;
+  color: #be1622;
 }
 
 form.query button.clear-term {

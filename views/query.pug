@@ -51,12 +51,12 @@ block data
     table(class='results')
         thead
             if querytype === 'qdm'
-                td
-            td Subject
-            td Predicate
-            td Object
+                td(width='2%')
+            td(width='15%') Subject
+            td(width='15%') Predicate
+            td(width='60%') Object
             if querytype === 'qvq'
-                td Versions
+                td(width='10%') Versions
         each triple in triples
             tr
                 if querytype === 'qdm'
