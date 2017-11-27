@@ -4,12 +4,15 @@ block content
     form(action='/qvm' method='get' class='query')
         label(for='subject') Subject
         input(id='subject' name='subject' type='text' value=query.subject)
+        button(class='clear-term term-subject' type='button')
         br
         label(for='predicate') Predicate
         input(id='predicate' name='predicate' type='text' value=query.predicate)
+        button(class='clear-term term-predicate' type='button')
         br
         label(for='object') Object
         input(id='object' name='object' type='text' value=query.object)
+        button(class='clear-term term-object' type='button')
         br
 
         label(for='version') Version
@@ -40,6 +43,12 @@ block data
             td Object
         each triple in triples
             tr
-                td #{triple.subject}
-                td #{triple.predicate}
-                td #{triple.object}
+                td
+                    span(class='fill-form term-subject' data=triple.subject) #{triple.subject}
+                td
+                    span(class='fill-form term-predicate' data=triple.predicate) #{triple.predicate}
+                td
+                    span(class='fill-form term-object' data=triple.object) #{triple.object}
+
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
+    script(src='/javascripts/scripts.js')

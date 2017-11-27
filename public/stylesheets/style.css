@@ -64,12 +64,12 @@ header {
   color: black;
 }
 .actionsWrapper a:hover {
-  color: #be1622 !important;
+  color: #be1622;
   border-bottom-style: solid;
 }
 .actionsWrapper a:active{
   border-bottom-style: solid;
-  color: #be1622 !important;
+  color: #be1622;
 }
 
 .stats {
@@ -92,13 +92,23 @@ form.query label {
 
 form.query input[type='text'], input[type='number'] {
   display: inline-block;
-  width: 80%;
-  font-size: 16px;
+  width: 75%;
+  font-size: 12px;
+  height: 18px;
 }
 
 form.query input[type='submit'] {
   margin-left: 15%;
   font-size: 16px;
+}
+
+form.query button.clear-term {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+form.query button.clear-term:after {
+  content: 'X';
 }
 
 table.results {
@@ -114,4 +124,13 @@ table.results tr td {
 table.results thead td {
   font-weight: bold;
   font-size: 16px;
+}
+
+.fill-form {
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.fill-form:hover {
+  color: #be1622;
 }
