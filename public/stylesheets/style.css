@@ -144,3 +144,28 @@ table.results thead td {
   font-weight: bold;
   color: red;
 }
+
+.hide {
+  display: none;
+}
+
+.navigation {
+  text-align: center;
+}
+
+.navigation button {
+  font-size: 16px;
+  font-weight: bolder;
+}
+
+.navigation button.page-first:after {
+  content: '<<';
+}
+
+.navigation button.page-previous:after {
+  content: '<';
+}
+
+.navigation button.page-next:after {
+  content: '>';
+}

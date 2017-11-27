@@ -44,6 +44,10 @@ block content
         |  #{duration}ms
 
 block data
+    div(class='navigation')
+        button(class='page-first' + (query.offset > 0 ? '' : ' hide') type='button')
+        button(class='page-previous' + (query.offset > 0 ? '' : ' hide') type='button')
+        button(class='page-next' type='button')
     table(class='results')
         thead
             if querytype === 'qdm'
@@ -70,6 +74,10 @@ block data
                 if querytype === 'qvq'
                     td
                         span #{triple.versionsString}
+    div(class='navigation')
+        button(class='page-first' + (query.offset > 0 ? '' : ' hide') type='button')
+        button(class='page-previous' + (query.offset > 0 ? '' : ' hide') type='button')
+        button(class='page-next' type='button')
 
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
     script(src='/javascripts/scripts.js')
