@@ -1,0 +1,5 @@
+{
+  "http://dbpedia.org/property/": "dbp",
+  "http://dbpedia.org/ontology/": "dbo",
+  "http://dbpedia.org/resource/": "dbr"
+}

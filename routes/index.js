@@ -2,11 +2,20 @@ var express = require('express');
 var router = express.Router();
 var ostrich = require('ostrich-bindings');
 var getFolderSize = require('get-folder-size');
+var fs = require('fs');
 
 var path = process.argv[2];
 if (!path) {
   throw new Error('No OSTRICH path was provided.');
 }
+var prefixes = JSON.parse(fs.readFileSync(process.argv > 3 ? process.argv[3] : 'config/prefixes.json'));
+var replacePrefixes = [];
+Object.keys(prefixes).forEach(function (uri) {
+  var reg = new RegExp('^' + uri.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&'));
+  replacePrefixes.push(function (full) {
+    return full.replace(reg, prefixes[uri] + ':');
+  });
+});
 
 var lastTotalCount = -1;
 
@@ -35,7 +44,7 @@ prepare(path, function (store) {
           res.render('query', Object.assign({ title: 'Version Materialization', querytype: 'qvm' }, stats,
             {
               query: query,
-              triples: triples,
+              triples: compactTriples(triples),
               currentCount: triples.length,
               count: count,
               countType: exact ? "Exact" : "Estimate",
@@ -64,7 +73,7 @@ prepare(path, function (store) {
           res.render('query', Object.assign({ title: 'Delta Materialization', querytype: 'qdm' }, stats,
             {
               query: query,
-              triples: triples,
+              triples: compactTriples(triples),
               currentCount: triples.length,
               count: count,
               countType: exact ? "Exact" : "Estimate",
@@ -104,7 +113,7 @@ prepare(path, function (store) {
           res.render('query', Object.assign({ title: 'Version Query', querytype: 'qvq' }, stats,
             {
               query: query,
-              triples: triples,
+              triples: compactTriples(triples),
               currentCount: triples.length,
               count: count,
               countType: exact ? "Exact" : "Estimate",
@@ -124,6 +133,24 @@ prepare(path, function (store) {
 });
 
 module.exports = router;
+
+function compactTriples(triples) {
+  return triples.map(compactTriple);
+}
+
+function compactTriple(triple) {
+  triple.subjectShort = compactTerm(triple.subject);
+  triple.predicateShort = compactTerm(triple.predicate);
+  triple.objectShort = compactTerm(triple.object);
+  return triple;
+}
+
+function compactTerm(term) {
+  replacePrefixes.forEach(function (prefixer) {
+    term = prefixer(term);
+  });
+  return term;
+}
 
 function prepare(path, cb) {
   ostrich.fromPath(path, function (error, store) {

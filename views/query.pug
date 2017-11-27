@@ -62,11 +62,11 @@ block data
                         else if triple.addition === false
                             span(class='term-deletion') -
                 td
-                    span(class='fill-form term-subject' data=triple.subject) #{triple.subject}
+                    span(class='fill-form term-subject' data=triple.subject) #{triple.subjectShort}
                 td
-                    span(class='fill-form term-predicate' data=triple.predicate) #{triple.predicate}
+                    span(class='fill-form term-predicate' data=triple.predicate) #{triple.predicateShort}
                 td
-                    span(class='fill-form term-object' data=triple.object) #{triple.object}
+                    span(class='fill-form term-object' data=triple.object) #{triple.objectShort}
                 if querytype === 'qvq'
                     td
                         span #{triple.versionsString}

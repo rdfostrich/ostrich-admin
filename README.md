@@ -25,6 +25,8 @@ $ npm start data/mystore.ostrich/
 
 The Web GUI will now be running on http://localhost:3000/.
 
+Optionally, a second prefixes file parameter can be added, which defaults to `config/prefixes.json`.
+
 ## License
 This software is written by [Ruben Taelman](http://rubensworks.net/) and colleagues.
 
