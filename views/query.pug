@@ -1,7 +1,7 @@
 extends layout
 
 block content
-    form(action='/qvm' method='get' class='query')
+    form(id='query' action=querytype method='get' class='query')
         label(for='subject') Subject
         input(id='subject' name='subject' type='text' value=query.subject)
         button(class='clear-term term-subject' type='button')
@@ -15,9 +15,17 @@ block content
         button(class='clear-term term-object' type='button')
         br
 
-        label(for='version') Version
-        input(id='version' name='version' type='number' value=query.version)
-        br
+        if querytype === 'qvm'
+            label(for='version') Version
+            input(id='version' name='version' type='number' value=query.version)
+            br
+        else if querytype === 'qdm'
+            label(for='version-start') Version Start
+            input(id='version-start' name='versionStart' type='number' value=query.versionStart)
+            br
+            label(for='version-end') Version End
+            input(id='version-end' name='versionEnd' type='number' value=query.versionEnd)
+            br
 
         label(for='offset') Offset
         input(id='offset' name='offset' type='number' value=query.offset)
@@ -38,17 +46,31 @@ block content
 block data
     table(class='results')
         thead
+            if querytype === 'qdm'
+                td
             td Subject
             td Predicate
             td Object
+            if querytype === 'qvq'
+                td Versions
         each triple in triples
             tr
+                if querytype === 'qdm'
+                    td
+                        if triple.addition === true
+                            span(class='term-addition') +
+                        else if triple.addition === false
+                            span(class='term-deletion') -
                 td
                     span(class='fill-form term-subject' data=triple.subject) #{triple.subject}
                 td
                     span(class='fill-form term-predicate' data=triple.predicate) #{triple.predicate}
                 td
                     span(class='fill-form term-object' data=triple.object) #{triple.object}
+                if querytype === 'qvq'
+                    td
+                        span #{triple.versionsString}
 
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js')
     script(src='/javascripts/scripts.js')
+

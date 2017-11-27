@@ -134,3 +134,13 @@ table.results thead td {
 .fill-form:hover {
   color: #be1622;
 }
+
+.term-addition {
+  font-weight: bold;
+  color: green;
+}
+
+.term-deletion {
+  font-weight: bold;
+  color: red;
+}

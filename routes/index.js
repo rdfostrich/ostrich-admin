@@ -25,14 +25,14 @@ prepare(path, function (store) {
         object: '',
         offset: 0,
         limit: 20,
-        version: store.maxVersion,
+        version: store.maxVersion
       }, req.query);
 
       var startTime = getTimeMs();
       store.searchTriplesVersionMaterialized(query.subject, query.predicate, query.object,
         { version: query.version, offset: query.offset, limit: query.limit }, function (error, triples, count, exact) {
           var endTime = getTimeMs();
-          res.render('qvm', Object.assign({ title: 'Version Materialization'}, stats,
+          res.render('query', Object.assign({ title: 'Version Materialization', querytype: 'qvm' }, stats,
             {
               query: query,
               triples: triples,
@@ -42,6 +42,75 @@ prepare(path, function (store) {
               duration: (endTime - startTime).toFixed(3)
             }));
       });
+    });
+  });
+
+  router.get('/qdm', function(req, res, next) {
+    getStats(path, store).then(function (stats) {
+      var query = Object.assign({
+        subject: '',
+        predicate: '',
+        object: '',
+        offset: 0,
+        limit: 20,
+        versionStart: 0,
+        versionEnd: store.maxVersion
+      }, req.query);
+
+      var startTime = getTimeMs();
+      store.searchTriplesDeltaMaterialized(query.subject, query.predicate, query.object,
+        { versionStart: query.versionStart, versionEnd: query.versionEnd, offset: query.offset, limit: query.limit }, function (error, triples, count, exact) {
+          var endTime = getTimeMs();
+          res.render('query', Object.assign({ title: 'Delta Materialization', querytype: 'qdm' }, stats,
+            {
+              query: query,
+              triples: triples,
+              currentCount: triples.length,
+              count: count,
+              countType: exact ? "Exact" : "Estimate",
+              duration: (endTime - startTime).toFixed(3)
+            }));
+        });
+    });
+  });
+
+  router.get('/qvq', function(req, res, next) {
+    getStats(path, store).then(function (stats) {
+      var query = Object.assign({
+        subject: '',
+        predicate: '',
+        object: '',
+        offset: 0,
+        limit: 20
+      }, req.query);
+
+      var startTime = getTimeMs();
+      store.searchTriplesVersion(query.subject, query.predicate, query.object,
+        { offset: query.offset, limit: query.limit }, function (error, triples, count, exact) {
+          var endTime = getTimeMs();
+          // Compact triple versions
+          triples.map(function (triple) {
+            var lastVersion = -2;
+            triple.versionsString = '[' + triple.versions[0];
+            triple.versions.sort().forEach(function (version) {
+              if (lastVersion !== -2 && version > lastVersion + 1) {
+                triple.versionsString += '-' + lastVersion + '], [' + version;
+              }
+              lastVersion = version;
+            });
+            triple.versionsString += '-' + lastVersion +  ']';
+            return triple;
+          });
+          res.render('query', Object.assign({ title: 'Version Query', querytype: 'qvq' }, stats,
+            {
+              query: query,
+              triples: triples,
+              currentCount: triples.length,
+              count: count,
+              countType: exact ? "Exact" : "Estimate",
+              duration: (endTime - startTime).toFixed(3)
+            }));
+        });
     });
   });
 
