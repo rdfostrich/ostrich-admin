@@ -67,7 +67,7 @@ header {
   color: #be1622;
   border-bottom-style: solid;
 }
-.actionsWrapper a:active{
+.actionsWrapper a.current {
   border-bottom-style: solid;
   color: #be1622;
 }

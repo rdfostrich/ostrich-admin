@@ -11,10 +11,10 @@ html
 
       div(class='actions')
         div(class='actionsWrapper')
-          a(href='/qvm') Version Materialization
-          a(href='/qdm') Delta Materialization
-          a(href='/qvq') Version Query
-          a(href='/ingest') Ingest
+          a(href='/qvm' class=querytype === 'qvm' ? 'current' : '') Version Materialization
+          a(href='/qdm' class=querytype === 'qdm' ? 'current' : '') Delta Materialization
+          a(href='/qvq' class=querytype === 'qvq' ? 'current' : '') Version Query
+          a(href='/ingest' class=querytype === 'ingest' ? 'current' : '') Ingest
 
       div(class='stats')
         b Store:
