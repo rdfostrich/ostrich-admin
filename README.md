@@ -11,6 +11,8 @@ Functionality:
 
 ## Install
 
+OSTRICH requires ZLib, Kyoto Cabinet and CMake (compilation only) to be installed.
+
 ```bash
 $ npm install
 ```
