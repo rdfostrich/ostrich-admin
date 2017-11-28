@@ -44,7 +44,7 @@ header {
 }
 
 .actionsWrapper {
-  width: 680px;
+  width: 760px;
   height: 20px;
   margin: auto;
 }
@@ -173,4 +173,28 @@ table.results thead td {
 
 .navigation button.page-next:after {
   content: '>';
+}
+
+
+.bar {
+  fill: #2e4bb4;
+  stroke: steelblue;
+  stroke-width: 1px;
+}
+.bar:hover {
+  fill: #be1622;
+}
+#graphtooltip {
+  position: relative;
+  top: -340px;
+  left: 50px;
+  color: #222222;
+  height: auto;
+  padding: 10px;
+}
+#graphtooltip p {
+  font-family: "Courier New", sans-serif;
+  margin: 0;
+  font-size: 14px;
+  line-height: 20px;
 }

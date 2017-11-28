@@ -3,6 +3,7 @@ var router = express.Router();
 var ostrich = require('ostrich-bindings');
 var getFolderSize = require('get-folder-size');
 var fs = require('fs');
+var _ = require('lodash');
 
 var path = process.argv[2];
 if (!path) {
@@ -123,6 +124,23 @@ prepare(path, function (store) {
     });
   });
 
+  router.get('/stats', function(req, res, next) {
+    getStats(path, store).then(function (stats) {
+
+      var startTime = getTimeMs();
+      var histograms = Promise.all([histogramVm(store)/*, histogramDm(store)*/]);
+      histograms.then(function (hist) {
+        var endTime = getTimeMs();
+        res.render('stats', Object.assign({ title: 'Statistics', querytype: 'stats' }, stats,
+          {
+            histogramVm: hist[0],
+            //histogramDm: hist[1],
+            duration: (endTime - startTime).toFixed(3)
+          }));
+      });
+    });
+  });
+
   // Cleanup
   process.on('SIGINT', function() {
     store.close(function() { process.exit(); });
@@ -199,5 +217,42 @@ function getTotalCount(store) {
 function getTimeMs() {
   var hrTime = process.hrtime();
   return hrTime[0] * 1000 + hrTime[1] / 1000000;
+}
+
+function countVm(store, version) {
+  return new Promise(function (resolve, reject) {
+    store.countTriplesVersionMaterialized(null, null, null, version, function (error, triples) {
+      if (error) {
+        reject(error);
+      }
+      resolve(triples);
+    });
+  });
+}
+
+function histogramVm(store) {
+  return _.range(store.maxVersion).reduce(function (p, v) {
+    return p.then(function (results) {
+      return countVm(store, v).then(function (result) {
+        results.push(result);
+        return results;
+      });
+    });
+  }, Promise.resolve([]));
+}
+
+function countDm(store, versionStart, versionEnd) {
+  return new Promise(function (resolve, reject) {
+    store.countTriplesDeltaMaterialized(null, null, null, versionStart, versionEnd, function (error, triples) {
+      if (error) {
+        reject(error);
+      }
+      resolve(triples);
+    });
+  });
+}
+
+function histogramDm(store) {
+  return Promise.all(_.range(store.maxVersion - 1).map(function (v) { return countDm(store, v, v + 1) }));
 }
 

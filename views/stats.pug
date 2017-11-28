@@ -1,0 +1,16 @@
+extends layout
+
+block content
+    div(id='stats-versions')
+    div(id='graphtooltip' class='hide')
+        p
+            strong Version:
+            span(id='version') 0
+            br
+            strong Triples:
+            span(id='value') 0
+    script(type='text/javascript')
+        | var vm = #{JSON.stringify(histogramVm)};
+    script(src="//d3js.org/d3.v4.min.js")
+    script(src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js")
+    script(src="javascripts/stats.js")
