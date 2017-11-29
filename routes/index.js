@@ -148,10 +148,10 @@ prepare(path, function (store) {
       var startTime = getTimeMs();
       append(store, additions, deletions).then(function(inserted) {
         var endTime = getTimeMs();
-        res.render('ingest', Object.assign({ title: 'Ingest', querytype: 'ing',
+        res.render('ingest', Object.assign({ title: 'Ingest', querytype: 'ingest',
           inserted: inserted, duration: (endTime - startTime).toFixed(3) }, stats));
       }).catch(function(e) {
-        res.render('ingest', Object.assign({ title: 'Ingest', querytype: 'ing',
+        res.render('ingest', Object.assign({ title: 'Ingest', querytype: 'ingest',
           inserted: 0, error: e, additions: additions, deletions: deletions }, stats));
       });
     });
