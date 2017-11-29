@@ -1,0 +1,30 @@
+extends layout
+
+block content
+    if error
+        div(class='error')
+            b Error
+            p #{error}
+
+    form(id='ingest' method='get' class='ingest')
+        div
+            div(class='triplesbox')
+                label(for='additions') Additions
+                textarea(id='additions' name='additions') #{additions}
+
+            if versions > 0
+                div(class='triplesbox')
+                    label(for='deletions') Deletions
+                    textarea(id='deletions' name='deletions') #{deletions}
+
+            br(class='clear')
+
+        br
+        input(type='submit' value='Ingest')
+
+    if inserted > 0
+        div(class='stats')
+            b Ingested:
+            |  #{inserted}
+            b Duration:
+            |  #{duration}ms

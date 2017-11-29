@@ -83,21 +83,21 @@ header {
   margin-left: 10px;
 }
 
-form.query label {
+form label {
   margin-bottom: 10px;
   display: inline-block;
   width: 20%;
   font-size: 16px;
 }
 
-form.query input[type='text'], input[type='number'] {
+form input[type='text'], input[type='number'] {
   display: inline-block;
   width: 70%;
   font-size: 12px;
   height: 18px;
 }
 
-form.query input[type='submit'] {
+form input[type='submit'] {
   background-image: linear-gradient(to bottom, #e4e4e4, #f7f7f7);
   border: 1px solid #afafaf;
   margin-left: 20%;
@@ -175,6 +175,33 @@ table.results thead td {
   content: '>';
 }
 
+.triplesbox {
+  float:left;
+  width: 300px;
+}
+
+.triplesbox textarea {
+  font-family: "Courier New", sans-serif;
+  height: 200px;
+  width: 290px;
+}
+
+.error {
+  padding: 5px;
+  background-color: #e2c9cb;
+  border: solid 2px #be1622;
+  color: #be1622;
+  margin-bottom: 5px;
+}
+
+.error b {
+  font-size: 18px;
+
+}
+
+.clear {
+  clear: both;
+}
 
 .bar {
   fill: #2e4bb4;

@@ -4,6 +4,7 @@ var ostrich = require('ostrich-bindings');
 var getFolderSize = require('get-folder-size');
 var fs = require('fs');
 var _ = require('lodash');
+var Parser = require('n3').Parser;
 
 var path = process.argv[2];
 if (!path) {
@@ -41,6 +42,11 @@ prepare(path, function (store) {
       var startTime = getTimeMs();
       store.searchTriplesVersionMaterialized(query.subject, query.predicate, query.object,
         { version: query.version, offset: query.offset, limit: query.limit }, function (error, triples, count, exact) {
+          if (error) {
+            triples = [];
+            count = 0;
+            exact = true;
+          }
           var endTime = getTimeMs();
           res.render('query', Object.assign({ title: 'Version Materialization', querytype: 'qvm' }, stats,
             {
@@ -70,6 +76,11 @@ prepare(path, function (store) {
       var startTime = getTimeMs();
       store.searchTriplesDeltaMaterialized(query.subject, query.predicate, query.object,
         { versionStart: query.versionStart, versionEnd: query.versionEnd, offset: query.offset, limit: query.limit }, function (error, triples, count, exact) {
+          if (error) {
+            triples = [];
+            count = 0;
+            exact = true;
+          }
           var endTime = getTimeMs();
           res.render('query', Object.assign({ title: 'Delta Materialization', querytype: 'qdm' }, stats,
             {
@@ -97,6 +108,11 @@ prepare(path, function (store) {
       var startTime = getTimeMs();
       store.searchTriplesVersion(query.subject, query.predicate, query.object,
         { offset: query.offset, limit: query.limit }, function (error, triples, count, exact) {
+          if (error) {
+            triples = [];
+            count = 0;
+            exact = true;
+          }
           var endTime = getTimeMs();
           // Compact triple versions
           triples.map(function (triple) {
@@ -121,6 +137,23 @@ prepare(path, function (store) {
               duration: (endTime - startTime).toFixed(3)
             }));
         });
+    });
+  });
+
+  router.get('/ingest', function(req, res, next) {
+    getStats(path, store).then(function (stats) {
+      var additions = req.query.additions || '';
+      var deletions = req.query.deletions || '';
+
+      var startTime = getTimeMs();
+      append(store, additions, deletions).then(function(inserted) {
+        var endTime = getTimeMs();
+        res.render('ingest', Object.assign({ title: 'Ingest', querytype: 'ing',
+          inserted: inserted, duration: (endTime - startTime).toFixed(3) }, stats));
+      }).catch(function(e) {
+        res.render('ingest', Object.assign({ title: 'Ingest', querytype: 'ing',
+          inserted: 0, error: e, additions: additions, deletions: deletions }, stats));
+      });
     });
   });
 
@@ -171,7 +204,7 @@ function compactTerm(term) {
 }
 
 function prepare(path, cb) {
-  ostrich.fromPath(path, function (error, store) {
+  ostrich.fromPath(path, false, function (error, store) {
     if (error) {
       throw error;
     }
@@ -182,13 +215,13 @@ function prepare(path, cb) {
 function getStats(path, store) {
   return new Promise(function (resolve, reject) {
     getTotalCount(store).then(function(triples) {
-      getFolderSize(path, function (err, size) {
+      getFolderSize(path, /.tmp/, function (err, size) {
         if (err) {
           reject(err);
         }
         var stats = {
           path: path,
-          versions: store.maxVersion,
+          versions: store.maxVersion + 1,
           size: (size / 1024 / 1024).toFixed(2),
           totalTriples: triples,
         };
@@ -204,6 +237,9 @@ function getTotalCount(store) {
     if (lastTotalCount > -1) {
       resolve(lastTotalCount);
     } else {
+      if (store.maxVersion < 0) {
+        return resolve(0);
+      }
       store.countTriplesVersion(null, null, null, function (error, triples) {
         if (error) {
           reject(error);
@@ -231,7 +267,7 @@ function countVm(store, version) {
 }
 
 function histogramVm(store) {
-  return _.range(store.maxVersion).reduce(function (p, v) {
+  return _.range(store.maxVersion + 1).reduce(function (p, v) {
     return p.then(function (results) {
       return countVm(store, v).then(function (result) {
         results.push(result);
@@ -256,3 +292,56 @@ function histogramDm(store) {
   return Promise.all(_.range(store.maxVersion - 1).map(function (v) { return countDm(store, v, v + 1) }));
 }
 
+function append(store, additions, deletions) {
+  return new Promise(function (resolve, reject) {
+    var triples = [];
+    new Parser().parse(additions, function(error, triple) {
+      if (error) {
+        reject('Error in additions: ' + error.message);
+      } else if (triple) {
+        triple.addition = true;
+        triples.push(triple);
+      } else {
+        new Parser().parse(deletions, function(error, triple) {
+          if (error) {
+            reject('Error in deletions: ' + error.message);
+          } else if (triple) {
+            triple.addition = false;
+            triples.push(triple);
+          } else {
+            if (!triples.length) {
+              return reject('');
+            }
+
+            // Make sure our triples are sorted
+            triples.sort(function (a, b) {
+              var compS = a.subject.localeCompare(b.subject);
+              if (compS === 0) {
+                var compP = a.predicate.localeCompare(b.predicate);
+                if (compP === 0) {
+                  return a.object.localeCompare(b.object);
+                }
+                return compP;
+              }
+              return compS;
+            });
+
+            console.log(triples); // TODO
+            console.log(store.maxVersion + 1); // TODO
+
+            store.append(store.maxVersion + 1, triples, function (error, insertedCount) {
+              if (error) {
+                return reject(error);
+              }
+// TODO: crash when ingesting version 0
+              // Reset total count cache
+              lastTotalCount = -1;
+
+              return resolve(insertedCount);
+            });
+          }
+        });
+      }
+    });
+  });
+}

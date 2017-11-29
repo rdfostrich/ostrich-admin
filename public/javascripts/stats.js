@@ -14,18 +14,14 @@ function plotArray(data, target) {
   var xAxis = d3.axisBottom(x);
   var yAxis = d3.axisLeft(y);
 
-  var line = d3.line()
-    .x(function(d, i) { return x(i); })
-    .y(function(d) { return y(d); });
-
   var svg = d3.select(target).append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-  x.domain(d3.extent(data, function(d, i) { return i; }));
-  y.domain(d3.extent(data, function(d) { return d; }));
+  x.domain(d3.extent([0].concat(data), function(d, i) { return i; }));
+  y.domain(d3.extent([0].concat(data), function(d) { return d; }));
 
   // X axis
   svg.append("g")
@@ -50,7 +46,7 @@ function plotArray(data, target) {
     .enter().append("rect")
     .attr("class", "bar")
     .attr("x", function(d, i) { return x(i); })
-    .attr("width", width / data.length - 2  )
+    .attr("width", width / (data.length)  )
     .attr("y", function(d) { return y(d); })
     .attr("height", function(d) { return height - y(d); })
     .on("mouseover", function(d, i) {
