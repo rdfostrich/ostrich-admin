@@ -314,7 +314,7 @@ function append(store, additions, deletions) {
             }
 
             // Make sure our triples are sorted
-            triples.sort(function (a, b) {
+            triples = triples.sort(function (a, b) {
               var compS = a.subject.localeCompare(b.subject);
               if (compS === 0) {
                 var compP = a.predicate.localeCompare(b.predicate);
@@ -326,14 +326,11 @@ function append(store, additions, deletions) {
               return compS;
             });
 
-            console.log(triples); // TODO
-            console.log(store.maxVersion + 1); // TODO
-
             store.append(store.maxVersion + 1, triples, function (error, insertedCount) {
               if (error) {
                 return reject(error);
               }
-// TODO: crash when ingesting version 0
+
               // Reset total count cache
               lastTotalCount = -1;
 
