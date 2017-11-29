@@ -225,3 +225,13 @@ table.results thead td {
   font-size: 14px;
   line-height: 20px;
 }
+
+footer {
+  border-top: solid 1px #afafaf;
+  text-align: center;
+  width: 800px;
+  padding: 20px;
+  margin: auto;
+  margin-top: 20px;
+  font-size: 10px;
+}
