@@ -29,6 +29,8 @@ The Web GUI will now be running on http://localhost:3000/.
 
 Optionally, a second prefixes file parameter can be added, which defaults to `config/prefixes.json`.
 
+_Some example OSTRICH datasets are available here: https://linkedsoftwaredependencies.org/raw/ostrich/datasets/_
+
 ## License
 This software is written by [Ruben Taelman](http://rubensworks.net/) and colleagues.
 
