@@ -1,5 +1,7 @@
 # OSTRICH Admin
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/rdfostrich/ostrich-admin.svg)](https://greenkeeper.io/)
+
 A Web GUI for interacting with an [OSTRICH](https://github.com/rdfostrich/ostrich) store.
 
 Functionality:
